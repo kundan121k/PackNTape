@@ -1,0 +1,27 @@
+<apex:page controller="QuickBooksAuthController" showHeader="true">
+    <apex:form id="authForm">
+        <apex:pageMessages />
+        <apex:outputPanel id="statusPanel" rendered="{!NOT(ISNULL(authStatus))}">
+            <apex:outputText value="{!authStatus}" style="color: green;" />
+        </apex:outputPanel>
+
+        <!-- Authenticate Button -->
+        <apex:commandButton value="Authenticate with QuickBooks" onclick="authorizeWithQuickbooks(); return false;" reRender="authForm" styleClass="btn-authorize"/>
+    </apex:form>
+
+    <!-- JavaScript to initiate QuickBooks OAuth -->
+    <script>
+        function authorizeWithQuickbooks() {
+            var redirectURI = encodeURIComponent('https://d30000001hbw8eac--dev--c.sandbox.vf.force.com/apex/QuickbooksAuthPage?core.apexpages.request.devconsole=1');
+            var authURL = 'https://appcenter.intuit.com/connect/oauth2?' +
+                'response_type=code' +
+                '&client_id=' + '{!$Label.QuickBooks_Client_ID}' +  // Use Custom Label in JavaScript
+                '&redirect_uri=' + redirectURI +
+                '&scope=com.intuit.quickbooks.accounting com.intuit.quickbooks.payment' +
+                '&state=security_token%3D138r5719ru3e1%26url%3Dhttps://www.mydemoapp.com/oauth-redirect';
+
+            // Redirect to QuickBooks authorization URL
+            window.location.href = authURL;
+        }
+    </script>
+</apex:page>
